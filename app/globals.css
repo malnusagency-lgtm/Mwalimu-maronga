@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-outfit: 'Outfit', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: var(--font-inter);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-outfit);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-green-700 text-white font-semibold text-sm transition-all duration-200 hover:bg-brand-green-800 hover:shadow-green hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-green-500 focus:ring-offset-2;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-gold-500 text-white font-semibold text-sm transition-all duration-200 hover:bg-brand-gold-600 hover:shadow-gold hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-gold-400 focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl border-2 border-brand-green-700 text-brand-green-700 font-semibold text-sm transition-all duration-200 hover:bg-brand-green-700 hover:text-white hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-green-500 focus:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .section-title {
+    @apply font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-gray-500 leading-relaxed max-w-2xl;
+  }
+
+  .gradient-green {
+    @apply bg-gradient-to-br from-brand-green-700 via-brand-green-800 to-brand-green-950;
+  }
+
+  .gradient-gold {
+    @apply bg-gradient-to-br from-brand-gold-400 via-brand-gold-500 to-brand-gold-700;
+  }
+
+  .text-gradient-green {
+    @apply bg-gradient-to-r from-brand-green-600 to-brand-green-800 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-brand-gold-500 to-brand-gold-700 bg-clip-text text-transparent;
+  }
+
+  .gold-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold-100 text-brand-gold-700 border border-brand-gold-200;
+  }
+
+  .green-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-green-100 text-brand-green-700 border border-brand-green-200;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a5c38;
+  border-radius: 999px;
+}
+
+/* Selection color */
+::selection {
+  background: #dcfce7;
+  color: #14532d;
+}
