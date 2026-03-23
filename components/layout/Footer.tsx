@@ -1,28 +1,33 @@
+"use client";
+
 import Link from "next/link";
 import { GraduationCap, Phone, Mail, MessageCircle, BookOpen, Users, Info, Contact } from "lucide-react";
-
-const footerLinks = [
-  {
-    heading: "Platform",
-    links: [
-      { label: "Home", href: "/" },
-      { label: "About", href: "/about" },
-      { label: "Shop", href: "/shop" },
-      { label: "Tutoring", href: "/tutoring" },
-    ],
-  },
-  {
-    heading: "Resources",
-    links: [
-      { label: "Kiswahili Materials", href: "/shop" },
-      { label: "Set Book Analysis", href: "/shop/set-book-analysis" },
-      { label: "Book a Session", href: "/tutoring" },
-      { label: "Contact Us", href: "/contact" },
-    ],
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const footerLinks = [
+    {
+      heading: "Platform",
+      links: [
+        { label: t.nav.home, href: "/" },
+        { label: t.nav.about, href: "/about" },
+        { label: t.nav.shop, href: "/shop" },
+        { label: t.nav.tutoring, href: "/tutoring" },
+      ],
+    },
+    {
+      heading: "Resources",
+      links: [
+        { label: t.nav.getMaterials, href: "/shop" },
+        { label: "Set Book Analysis", href: "/shop/set-book-analysis" },
+        { label: t.nav.tutoring, href: "/tutoring" },
+        { label: t.nav.contact, href: "/contact" },
+      ],
+    },
+  ];
+
   return (
     <footer className="bg-brand-green-950 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -41,8 +46,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm mb-6">
-              Premium Kiswahili education materials and personalized tutoring from a certified KCSE examiner
-              with over a decade of classroom experience.
+              {t.footer.tagline}
             </p>
             {/* Contact Info */}
             <div className="flex flex-col gap-3">
@@ -97,10 +101,10 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 mt-12 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} Mwalimu Maronga. All rights reserved.
+            © {new Date().getFullYear()} Mwalimu Maronga. {t.footer.rights}
           </p>
           <div className="flex items-center gap-1 text-xs text-gray-500">
-            <span>KCSE Examiner</span>
+            <span>{t.stats.examiner}</span>
             <span className="text-brand-gold-500">·</span>
             <span>Kiswahili Teacher</span>
             <span className="text-brand-gold-500">·</span>

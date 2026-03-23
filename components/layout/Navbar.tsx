@@ -6,19 +6,21 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, BookOpen, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/shop", label: "Shop" },
-  { href: "/tutoring", label: "Tutoring" },
-  { href: "/contact", label: "Contact" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { language, t, toggleLanguage } = useLanguage();
+
+  const navLinks = [
+    { href: "/", label: t.nav.home },
+    { href: "/about", label: t.nav.about },
+    { href: "/shop", label: t.nav.shop },
+    { href: "/tutoring", label: t.nav.tutoring },
+    { href: "/contact", label: t.nav.contact },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -81,9 +83,15 @@ export default function Navbar() {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center gap-3">
+              <button
+                onClick={toggleLanguage}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-brand-green-800 transition-colors"
+              >
+                {language === "en" ? "SW" : "EN"}
+              </button>
               <Link href="/shop" className="btn-gold text-xs px-4 py-2 gap-1.5">
                 <BookOpen className="w-3.5 h-3.5" />
-                Get Materials
+                {t.nav.getMaterials}
               </Link>
             </div>
 
@@ -124,10 +132,16 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-2 border-t border-gray-100 mt-1">
+              <div className="pt-2 border-t border-gray-100 mt-1 pb-4 flex flex-col gap-3">
+                <button
+                  onClick={toggleLanguage}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  {language === "en" ? "Change to Swahili" : "Badili kwa Kiingereza"}
+                </button>
                 <Link href="/shop" className="btn-gold w-full justify-center text-sm py-3">
                   <BookOpen className="w-4 h-4" />
-                  Get Materials
+                  {t.nav.getMaterials}
                 </Link>
               </div>
             </nav>

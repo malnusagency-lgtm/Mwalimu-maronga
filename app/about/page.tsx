@@ -18,8 +18,6 @@ import SectionWrapper from "@/components/ui/SectionWrapper";
 import CTASection from "@/components/ui/CTASection";
 
 const schools = [
-  { name: "Ngenia Boys High School", role: "Kiswahili Teacher", period: "2010–2015", location: "Central Kenya" },
-  { name: "Mukoma High School", role: "Kiswahili Teacher", period: "2015–2019", location: "Nairobi County" },
   { name: "Moi Girls' School Nairobi", role: "Senior Kiswahili Teacher", period: "2019–Present", location: "Nairobi" },
 ];
 
@@ -88,19 +86,11 @@ export default function AboutPage() {
               more than a decade of transformative classroom experiences.
             </p>
             <p className="leading-relaxed">
-              After graduating with a degree in Education (Kiswahili), Mwalimu Maronga began his teaching
-              career at <strong className="text-gray-900">Ngenia Boys High School</strong>, where he quickly
-              earned recognition for his unique ability to make complex linguistic concepts accessible and
-              enjoyable. His students consistently outperformed the national average in Kiswahili, a trend
-              that followed him throughout his career.
-            </p>
-            <p className="leading-relaxed">
-              His journey then took him to <strong className="text-gray-900">Mukoma High School</strong>, where
-              he expanded his pedagogical approach — incorporating drama, music, and creative storytelling
-              into his Kiswahili lessons. This innovative methodology drew the attention of the Kenya National
-              Examinations Council, which subsequently appointed him as a <strong className="text-gray-900">
-              KCSE Examiner for Paper 102/3</strong>, giving him unique insider knowledge of how the examination
-              system works.
+              After graduating with a degree in Education (Kiswahili), Mwalimu Maronga developed a pedagogical
+              approach that incorporates drama, music, and creative storytelling into his Kiswahili lessons.
+              This innovative methodology drew the attention of the Kenya National Examinations Council, which
+              subsequently appointed him as a <strong className="text-gray-900">KCSE Examiner for Paper 102/3</strong>,
+              giving him unique insider knowledge of how the examination system works.
             </p>
             <p className="leading-relaxed">
               Currently serving at <strong className="text-gray-900">Moi Girls&apos; School Nairobi</strong> — one

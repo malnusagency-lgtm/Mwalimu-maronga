@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 export const metadata: Metadata = {
   title: {
@@ -43,9 +44,11 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 pt-16 md:pt-20">{children}</main>
-        <Footer />
+        <LanguageProvider>
+          <Navbar />
+          <main className="flex-1 pt-16 md:pt-20">{children}</main>
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );
