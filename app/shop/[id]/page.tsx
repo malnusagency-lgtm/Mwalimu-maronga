@@ -107,7 +107,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Benefits */}
             <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-              <h3 className="font-heading font-bold text-gray-900 text-base mb-4">What's Included</h3>
+              <h3 className="font-heading font-bold text-gray-900 text-base mb-4">What&apos;s Included</h3>
               <div className="flex flex-col gap-3">
                 {product.benefits.map((b) => (
                   <div key={b} className="flex items-start gap-2.5">

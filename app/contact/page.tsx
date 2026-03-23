@@ -74,7 +74,7 @@ export default function ContactPage() {
               Contact Mwalimu Maronga
             </h1>
             <p className="text-brand-green-200 text-lg max-w-xl mx-auto">
-              Have a question about materials, tutoring, or anything else? We'd love to hear from you.
+              Have a question about materials, tutoring, or anything else? We&apos;d love to hear from you.
             </p>
           </motion.div>
         </div>
@@ -89,9 +89,9 @@ export default function ContactPage() {
             transition={{ duration: 0.6 }}
           >
             <span className="green-badge mb-4 inline-flex">Contact Details</span>
-            <h2 className="font-heading text-3xl font-bold text-gray-900 mb-4">Let's Connect</h2>
+            <h2 className="font-heading text-3xl font-bold text-gray-900 mb-4">Let&apos;s Connect</h2>
             <p className="text-gray-600 leading-relaxed mb-8">
-              Whether you're a student, parent, or educator — reach out through any channel below.
+              Whether you&apos;re a student, parent, or educator — reach out through any channel below.
               The fastest response is always via WhatsApp.
             </p>
 

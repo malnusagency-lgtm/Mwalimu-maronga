@@ -98,7 +98,7 @@ export default function HomePage() {
                 <p className="text-brand-green-200 text-lg leading-relaxed mb-8 max-w-xl">
                   Premium study materials and personalized tutoring from Mwalimu Maronga —
                   a certified KCSE examiner, published author, and Kiswahili teacher with
-                  experience at Kenya's top schools.
+                  experience at Kenya&apos;s top schools.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Link href="/shop" className="btn-gold px-8 py-4 text-base">
@@ -241,7 +241,7 @@ export default function HomePage() {
                   <Star key={i} className="w-3 h-3 text-brand-gold-500 fill-current" />
                 ))}
               </div>
-              <p className="text-gray-900 font-semibold text-sm">"Best Kiswahili teacher!"</p>
+              <p className="text-gray-900 font-semibold text-sm">&quot;Best Kiswahili teacher!&quot;</p>
               <p className="text-gray-400 text-xs mt-0.5">— Past Student, Moi Girls Nairobi</p>
             </div>
           </motion.div>
@@ -254,7 +254,7 @@ export default function HomePage() {
           <span className="gold-badge mb-4 inline-flex">Digital Materials</span>
           <h2 className="section-title mb-4">Premium Kiswahili Resources</h2>
           <p className="section-subtitle mx-auto">
-            Study materials crafted from the examiner's desk — designed to get you the grade you deserve.
+            Study materials crafted from the examiner&apos;s desk — designed to get you the grade you deserve.
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

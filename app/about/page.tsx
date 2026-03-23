@@ -83,7 +83,7 @@ export default function AboutPage() {
           <div className="prose prose-lg max-w-none text-gray-600 space-y-5">
             <p className="leading-relaxed">
               Victor Maronga, widely known as <strong className="text-gray-900">Mwalimu Maronga</strong>, is
-              one of Kenya's most passionate and effective Kiswahili educators. Born with an innate love for
+              one of Kenya&apos;s most passionate and effective Kiswahili educators. Born with an innate love for
               the Kiswahili language and Kenyan culture, he pursued a career in education that has spanned
               more than a decade of transformative classroom experiences.
             </p>
@@ -103,8 +103,8 @@ export default function AboutPage() {
               system works.
             </p>
             <p className="leading-relaxed">
-              Currently serving at <strong className="text-gray-900">Moi Girls' School Nairobi</strong> — one
-              of Kenya's most prestigious national schools — Mwalimu Maronga continues to inspire a new generation
+              Currently serving at <strong className="text-gray-900">Moi Girls&apos; School Nairobi</strong> — one
+              of Kenya&apos;s most prestigious national schools — Mwalimu Maronga continues to inspire a new generation
               of Kiswahili speakers, writers, and thinkers. His work extends beyond the classroom through
               his published books, digital materials, and social media content that reaches thousands of
               students across the country.
@@ -124,7 +124,7 @@ export default function AboutPage() {
           <span className="gold-badge mb-4 inline-flex">Experience</span>
           <h2 className="section-title mb-4">Schools of Experience</h2>
           <p className="section-subtitle mx-auto">
-            A teaching journey across some of Kenya's finest educational institutions.
+            A teaching journey across some of Kenya&apos;s finest educational institutions.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">

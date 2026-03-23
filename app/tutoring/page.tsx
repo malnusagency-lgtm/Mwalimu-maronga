@@ -59,7 +59,7 @@ export default function TutoringPage() {
             <h2 className="section-title mb-6">Tutoring with Examiner-Level Insight</h2>
             <p className="text-gray-600 leading-relaxed mb-6">
               Most tutors teach what they studied. Mwalimu Maronga teaches from experience — both as
-              a classroom teacher at Kenya's top schools, and as a KCSE examiner who has marked
+              a classroom teacher at Kenya&apos;s top schools, and as a KCSE examiner who has marked
               thousands of student papers.
             </p>
             <p className="text-gray-600 leading-relaxed mb-8">
