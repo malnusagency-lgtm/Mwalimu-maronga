@@ -13,6 +13,7 @@ export type Product = {
   pages?: number;
   featured: boolean;
   preview?: string;
+  pdfUrl?: string; // Cloudinary URL of the downloadable PDF file
 };
 
 export const products: Product[] = [
