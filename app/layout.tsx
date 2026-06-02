@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -28,11 +29,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headerList = await headers();
+  const pathname = headerList.get("x-pathname") || "";
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -45,9 +50,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen flex flex-col">
         <LanguageProvider>
-          <Navbar />
-          <main className="flex-1 pt-16 md:pt-20">{children}</main>
-          <Footer />
+          {!isAdmin && <Navbar />}
+          <main className={isAdmin ? "flex-1" : "flex-1 pt-16 md:pt-20"}>{children}</main>
+          {!isAdmin && <Footer />}
         </LanguageProvider>
       </body>
     </html>

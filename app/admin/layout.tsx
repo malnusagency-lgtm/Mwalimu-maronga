@@ -14,29 +14,17 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased" style={{ background: "#0f1117", minHeight: "100vh" }}>
-        <div className="flex h-screen overflow-hidden">
-          {/* Sidebar */}
-          <AdminSidebar />
+    <div className="flex h-screen overflow-hidden text-white" style={{ background: "#0f1117" }}>
+      {/* Sidebar */}
+      <AdminSidebar />
 
-          {/* Main Area */}
-          <div className="flex flex-col flex-1 overflow-hidden">
-            <AdminHeader />
-            <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-              {children}
-            </main>
-          </div>
-        </div>
-      </body>
-    </html>
+      {/* Main Area */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <AdminHeader />
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }
