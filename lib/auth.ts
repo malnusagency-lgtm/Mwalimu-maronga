@@ -47,12 +47,16 @@ export function verifySessionToken(token: string): boolean {
 
 /** Validate submitted credentials against environment variables */
 export function validateCredentials(email: string, password: string): boolean {
-  const adminEmail = process.env.ADMIN_EMAIL ?? "";
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "";
+  // Use user's requested default credentials if env variables are not set
+  const adminEmail = process.env.ADMIN_EMAIL || "Marongabooks@gmail.com";
+  const adminPassword = process.env.ADMIN_PASSWORD || "7200Vic@7";
+
+  // Normalize by removing all whitespaces and converting to lowercase
+  const normalizeEmail = (e: string) => e.replace(/\s+/g, "").toLowerCase();
 
   return (
-    email.trim().toLowerCase() === adminEmail.trim().toLowerCase() &&
-    password === adminPassword
+    normalizeEmail(email) === normalizeEmail(adminEmail) &&
+    password.trim() === adminPassword.trim()
   );
 }
 
