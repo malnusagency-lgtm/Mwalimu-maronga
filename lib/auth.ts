@@ -45,16 +45,27 @@ export function verifySessionToken(token: string): boolean {
 
 /** Validate submitted credentials against environment variables */
 export function validateCredentials(email: string, password: string): boolean {
-  // Use user's requested default credentials if env variables are not set
-  const adminEmail = process.env.ADMIN_EMAIL || "Marongabooks@gmail.com";
-  const adminPassword = process.env.ADMIN_PASSWORD || "7200Vic@7";
+  const cleanValue = (v: string | undefined): string => {
+    if (!v) return "";
+    return v.trim().replace(/^['"]|['"]$/g, "").trim();
+  };
+
+  // Resolve admin credentials with clean strings and fallbacks
+  let adminEmail = cleanValue(process.env.ADMIN_EMAIL);
+  if (!adminEmail) adminEmail = "Marongabooks@gmail.com";
+
+  let adminPassword = cleanValue(process.env.ADMIN_PASSWORD);
+  if (!adminPassword) adminPassword = "7200Vic@7";
 
   // Normalize by removing all whitespaces and converting to lowercase
   const normalizeEmail = (e: string) => e.replace(/\s+/g, "").toLowerCase();
 
+  const inputEmail = cleanValue(email);
+  const inputPassword = cleanValue(password);
+
   return (
-    normalizeEmail(email) === normalizeEmail(adminEmail) &&
-    password.trim() === adminPassword.trim()
+    normalizeEmail(inputEmail) === normalizeEmail(adminEmail) &&
+    inputPassword === adminPassword
   );
 }
 
