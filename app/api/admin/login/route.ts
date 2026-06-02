@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import {
   validateCredentials,
   createSessionToken,
@@ -24,8 +25,8 @@ export async function POST(req: NextRequest) {
 
     const token = createSessionToken();
 
-    const response = NextResponse.json({ success: true });
-    response.cookies.set(SESSION_COOKIE, token, {
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_COOKIE, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
 
-    return response;
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Login error:", err);
     return NextResponse.json({ error: "Server error. Please try again." }, { status: 500 });
