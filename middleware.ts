@@ -14,21 +14,12 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check session cookie
+  // Check session cookie presence
   const sessionCookie = req.cookies.get(SESSION_COOKIE)?.value;
 
-  if (!sessionCookie) {
+  if (!sessionCookie || sessionCookie.trim() === "") {
     const loginUrl = new URL("/admin/login", req.url);
     loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // We do lightweight presence check here; full HMAC verify happens in API routes
-  // (middleware runs on edge runtime which has limited crypto support)
-  // The token structure is: base64payload.hexsig — just check it looks right
-  const parts = sessionCookie.split(".");
-  if (parts.length !== 2) {
-    const loginUrl = new URL("/admin/login", req.url);
     return NextResponse.redirect(loginUrl);
   }
 
