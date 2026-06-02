@@ -44,6 +44,16 @@ interface FormState {
   pdfUrl: string;
 }
 
+// Separate type for validation error messages — all string fields only
+type FormErrors = {
+  title?: string;
+  slug?: string;
+  description?: string;
+  price?: string;
+  image?: string;
+  category?: string;
+};
+
 const INITIAL: FormState = {
   title: "",
   slug: "",
@@ -165,11 +175,11 @@ export function ProductForm() {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [errors, setErrors] = useState<Partial<FormState>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const set = (key: keyof FormState, value: FormState[typeof key]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
+    if (key in errors) setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -199,7 +209,7 @@ export function ProductForm() {
     );
 
   const validate = () => {
-    const e: Partial<Record<keyof FormState, string>> = {};
+    const e: FormErrors = {};
     if (!form.title.trim()) e.title = "Title is required";
     if (!form.slug.trim()) e.slug = "Slug is required";
     if (!form.description.trim()) e.description = "Short description is required";
