@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDynamicProducts, addDynamicProduct } from "@/lib/db";
+import { products as staticProducts } from "@/data/products";
 
 export async function GET() {
   const dynamic = getDynamicProducts();
-  return NextResponse.json(dynamic);
+  // Return dynamic (newly added) products first, then the static ones
+  return NextResponse.json([...dynamic, ...staticProducts]);
 }
+
 
 export async function POST(req: NextRequest) {
   try {
