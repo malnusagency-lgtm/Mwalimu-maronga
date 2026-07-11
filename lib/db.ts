@@ -2,10 +2,20 @@ import fs from "fs";
 import path from "path";
 import { Product } from "@/data/products";
 
-const DB_PATH = path.join(process.cwd(), "data", "products-dynamic.json");
+const IS_VERCEL = process.env.VERCEL === "1";
+const DB_PATH = IS_VERCEL
+  ? path.join("/tmp", "products-dynamic.json")
+  : path.join(process.cwd(), "data", "products-dynamic.json");
 
 function readStore(): Product[] {
   try {
+    if (IS_VERCEL && !fs.existsSync(DB_PATH)) {
+      const localPath = path.join(process.cwd(), "data", "products-dynamic.json");
+      if (fs.existsSync(localPath)) {
+        const content = fs.readFileSync(localPath, "utf-8");
+        fs.writeFileSync(DB_PATH, content, "utf-8");
+      }
+    }
     const raw = fs.readFileSync(DB_PATH, "utf-8");
     return JSON.parse(raw) as Product[];
   } catch {
@@ -14,7 +24,16 @@ function readStore(): Product[] {
 }
 
 function writeStore(products: Product[]): void {
-  fs.writeFileSync(DB_PATH, JSON.stringify(products, null, 2), "utf-8");
+  try {
+    // Ensure parent directories exist (especially in /tmp or custom environments)
+    const dir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(DB_PATH, JSON.stringify(products, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Failed to write to product store:", err);
+  }
 }
 
 export function getDynamicProducts(): Product[] {
@@ -44,3 +63,4 @@ export function updateDynamicProduct(id: string, updates: Partial<Product>): Pro
   writeStore(store);
   return store[idx];
 }
+
