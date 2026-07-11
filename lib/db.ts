@@ -36,13 +36,12 @@ function writeStore(store: Store): void {
   }
 }
 
-/** Returns all products: dynamic ones first, then static (minus any deleted) */
+/** Returns all products: dynamic ones only */
 export function getAllProducts(): Product[] {
   const store = readStore();
   const deletedSet = new Set(store.deletedIds);
-  const filteredStatic = staticProducts.filter((p) => !deletedSet.has(p.id));
   const filteredDynamic = store.dynamic.filter((p) => !deletedSet.has(p.id));
-  return [...filteredDynamic, ...filteredStatic];
+  return filteredDynamic;
 }
 
 /** @deprecated use getAllProducts instead */
