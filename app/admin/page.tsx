@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   BookOpen,
   TrendingUp,
-  Users,
   DollarSign,
   Star,
   ArrowUpRight,
@@ -13,7 +12,6 @@ import {
   Eye,
   Package,
   GraduationCap,
-  Clock,
   CheckCircle,
 } from "lucide-react";
 import { Product } from "@/data/products";
@@ -74,30 +72,7 @@ function StatCard({
   );
 }
 
-// ─── Revenue Mini Chart (CSS bars) ───────────────────────────────────────────
-const CHART_DATA = [65, 40, 80, 55, 90, 70, 100, 75, 85, 60, 95, 88];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-function MiniBarChart() {
-  return (
-    <div className="flex items-end gap-1.5 h-16 w-full">
-      {CHART_DATA.map((val, i) => (
-        <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
-          <div
-            className="w-full rounded-t transition-all duration-300 group-hover:opacity-100 opacity-80"
-            style={{
-              height: `${(val / 100) * 64}px`,
-              background:
-                i === CHART_DATA.length - 1
-                  ? "linear-gradient(to top, #1a5c38, #22c55e)"
-                  : "rgba(26,92,56,0.4)",
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
+// ─── (mockup chart removed — real sales data will come from payment integration) ───
 
 // ─── Category Pill ────────────────────────────────────────────────────────────
 const CATEGORY_COLORS: Record<string, string> = {
@@ -195,14 +170,13 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
           icon={BookOpen}
           label="Total Products"
           value={loading ? "…" : String(products.length)}
           sub={`${featured} featured`}
           color="#1a5c38"
-          trend="+2 this month"
         />
         <StatCard
           icon={DollarSign}
@@ -210,14 +184,6 @@ export default function AdminDashboardPage() {
           value={loading ? "…" : `KES ${totalRevenue.toLocaleString()}`}
           sub="Sum of all prices"
           color="#f59e0b"
-        />
-        <StatCard
-          icon={Users}
-          label="Students Reached"
-          value="1,200+"
-          sub="Since launch"
-          color="#6366f1"
-          trend="+18%"
         />
         <StatCard
           icon={Star}
@@ -230,7 +196,7 @@ export default function AdminDashboardPage() {
 
       {/* ── Main Grid ── */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Revenue chart */}
+        {/* Sales info panel */}
         <div
           className="lg:col-span-2 rounded-2xl p-6 border"
           style={{ background: "#161b22", borderColor: "rgba(255,255,255,0.07)" }}
@@ -241,42 +207,28 @@ export default function AdminDashboardPage() {
                 Sales Activity
               </h2>
               <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>
-                Simulated monthly trend (integrate M-Pesa/Stripe for real data)
+                Connect M-Pesa or Stripe to see real revenue data here
               </p>
             </div>
             <span
               className="text-xs px-3 py-1 rounded-full font-medium"
               style={{ background: "rgba(26,92,56,0.2)", color: "#4ade80" }}
             >
-              2025
+              Live
             </span>
           </div>
-          <MiniBarChart />
-          <div className="flex justify-between mt-2">
-            {MONTHS.map((m) => (
-              <span key={m} className="text-[9px] flex-1 text-center" style={{ color: "#4b5563" }}>
-                {m}
-              </span>
-            ))}
+          <div
+            className="flex flex-col items-center justify-center py-10 rounded-2xl border-2 border-dashed"
+            style={{ borderColor: "rgba(255,255,255,0.07)" }}
+          >
+            <TrendingUp className="w-10 h-10 mb-3" style={{ color: "rgba(255,255,255,0.15)" }} />
+            <p className="text-sm font-medium" style={{ color: "#6b7280" }}>Payment integration required</p>
+            <p className="text-xs mt-1" style={{ color: "#4b5563" }}>Sales charts will appear once M-Pesa / Stripe is connected</p>
           </div>
           <div
             className="mt-4 pt-4 border-t flex items-center gap-6"
             style={{ borderColor: "rgba(255,255,255,0.06)" }}
           >
-            <div>
-              <p className="text-xs" style={{ color: "#6b7280" }}>
-                This month
-              </p>
-              <p className="font-heading font-bold text-white text-lg">KES 12,450</p>
-            </div>
-            <div>
-              <p className="text-xs" style={{ color: "#6b7280" }}>
-                vs last month
-              </p>
-              <p className="text-sm font-semibold" style={{ color: "#22c55e" }}>
-                ↑ 23%
-              </p>
-            </div>
             <div className="ml-auto">
               <Link
                 href="/admin/analytics"
@@ -465,7 +417,7 @@ export default function AdminDashboardPage() {
               {[
                 { label: "Shop page", ok: true },
                 { label: "API routes", ok: true },
-                { label: "Cloudinary", ok: false, note: "Configure .env.local" },
+                { label: "Cloudinary", ok: true },
               ].map((s) => (
                 <div key={s.label} className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: "#9ca3af" }}>
@@ -479,7 +431,7 @@ export default function AdminDashboardPage() {
                         : { background: "rgba(245,158,11,0.15)", color: "#f59e0b" }
                     }
                   >
-                    {s.ok ? "✓ Online" : s.note ?? "Offline"}
+                    {s.ok ? "✓ Online" : "Offline"}
                   </span>
                 </div>
               ))}
@@ -511,10 +463,10 @@ export default function AdminDashboardPage() {
               time: "On page load",
             },
             {
-              icon: Clock,
-              color: "#f59e0b",
-              text: "Cloudinary integration ready — add credentials to activate",
-              time: "Pending setup",
+              icon: CheckCircle,
+              color: "#22c55e",
+              text: "Cloudinary configured — image & PDF uploads are active",
+              time: "Ready",
             },
           ].map((a, i) => {
             const Icon = a.icon;

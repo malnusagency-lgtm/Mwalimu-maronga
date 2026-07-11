@@ -27,32 +27,6 @@ const credentials = [
   "Set Book Analyst & Educational Actor",
 ];
 
-const videoCards = [
-  {
-    id: "yt1",
-    platform: "YouTube",
-    title: "KCSE Kiswahili Insha Tips – Score A",
-    views: "12K views",
-    color: "from-red-500 to-red-700",
-    icon: "▶",
-  },
-  {
-    id: "yt2",
-    platform: "YouTube",
-    title: "Isimu Jamii – Full Revision Notes",
-    views: "8K views",
-    color: "from-red-500 to-red-700",
-    icon: "▶",
-  },
-  {
-    id: "tk1",
-    platform: "TikTok",
-    title: "Kiswahili vines: Sarufi ya Kesho 🤣",
-    views: "45K views",
-    color: "from-gray-900 to-gray-700",
-    icon: "♪",
-  },
-];
 
 export default function HomePage() {
   const { t } = useLanguage();
@@ -62,7 +36,7 @@ export default function HomePage() {
     { icon: GraduationCap, label: t.stats.examiner, value: "Paper 102/3", color: "text-brand-gold-500" },
     { icon: Users, label: t.stats.taught, value: "1,000+", color: "text-brand-green-500" },
     { icon: Award, label: t.stats.schools, value: "Moi Girls' Nairobi", color: "text-brand-gold-500" },
-    { icon: BookOpen, label: t.stats.materials, value: "5 PDFs", color: "text-brand-green-500" },
+    { icon: BookOpen, label: t.stats.materials, value: `${featured.length} PDFs`, color: "text-brand-green-500" },
   ];
 
   return (
@@ -338,32 +312,45 @@ export default function HomePage() {
             Free Kiswahili lessons, tips, and entertaining content across YouTube and TikTok.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {videoCards.map((card) => (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="card group cursor-pointer"
-            >
-              <div className={`relative h-44 bg-gradient-to-br ${card.color} flex items-center justify-center`}>
-                <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Play className="w-6 h-6 text-white fill-current ml-0.5" />
-                </div>
-                <div className="absolute top-3 right-3">
-                  <span className="text-[11px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full">
-                    {card.platform}
-                  </span>
-                </div>
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <a
+            href="https://www.youtube.com/@MwalimuMaronga"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group cursor-pointer hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="relative h-44 bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-6 h-6 text-white fill-current ml-0.5" />
               </div>
-              <div className="p-5">
-                <h4 className="font-semibold text-gray-900 text-sm mb-1">{card.title}</h4>
-                <p className="text-gray-400 text-xs">{card.views}</p>
+              <div className="absolute top-3 right-3">
+                <span className="text-[11px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full">YouTube</span>
               </div>
-            </motion.div>
-          ))}
+            </div>
+            <div className="p-5">
+              <h4 className="font-semibold text-gray-900 text-sm mb-1">Watch on YouTube</h4>
+              <p className="text-gray-400 text-xs">Free Kiswahili lessons & revision tips</p>
+            </div>
+          </a>
+          <a
+            href="https://www.tiktok.com/@mwalimumaronga"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group cursor-pointer hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="relative h-44 bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-6 h-6 text-white fill-current ml-0.5" />
+              </div>
+              <div className="absolute top-3 right-3">
+                <span className="text-[11px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full">TikTok</span>
+              </div>
+            </div>
+            <div className="p-5">
+              <h4 className="font-semibold text-gray-900 text-sm mb-1">Follow on TikTok</h4>
+              <p className="text-gray-400 text-xs">Kiswahili vines & quick study tips</p>
+            </div>
+          </a>
         </div>
       </SectionWrapper>
 
