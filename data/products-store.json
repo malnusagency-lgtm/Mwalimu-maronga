@@ -1,1 +1,53 @@
-{ "dynamic": [], "deletedIds": [] }
+{
+  "dynamic": [
+    {
+      "id": "dyn-1783780804592",
+      "title": "Test",
+      "slug": "test",
+      "description": "d",
+      "longDescription": "d",
+      "price": 10,
+      "priceDisplay": "KES 10",
+      "image": "/img",
+      "category": "Grammar",
+      "tags": [],
+      "benefits": [],
+      "featured": false,
+      "preview": "",
+      "pdfUrl": ""
+    },
+    {
+      "id": "dyn-1783780671127",
+      "title": "Test",
+      "slug": "test",
+      "description": "d",
+      "longDescription": "d",
+      "price": 10,
+      "priceDisplay": "KES 10",
+      "image": "/img",
+      "category": "Grammar",
+      "tags": [],
+      "benefits": [],
+      "featured": false,
+      "preview": "",
+      "pdfUrl": ""
+    },
+    {
+      "id": "dyn-1783780619114",
+      "title": "Test Product",
+      "slug": "test-product",
+      "description": "A test product",
+      "longDescription": "A test product",
+      "price": 1000,
+      "priceDisplay": "KES 1000",
+      "image": "/images/products/test.png",
+      "category": "Bundle",
+      "tags": [],
+      "benefits": [],
+      "featured": false,
+      "preview": "",
+      "pdfUrl": ""
+    }
+  ],
+  "deletedIds": []
+}

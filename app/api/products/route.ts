@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import { getAllProducts, addDynamicProduct } from "@/lib/db";
+import { getAllProducts, addDynamicProduct, deleteDynamicProduct } from "@/lib/db";
 
 export async function GET() {
   const all = getAllProducts();
@@ -58,6 +58,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(saved, { status: 201 });
   } catch (error) {
     console.error("POST /api/products error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "Missing id parameter" }, { status: 400 });
+    }
+    
+    const deleted = deleteDynamicProduct(id);
+    if (!deleted) {
+      return NextResponse.json(
+        { error: "Product not found or is a static product" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({ success: true, id });
+  } catch (error) {
+    console.error("DELETE /api/products error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
