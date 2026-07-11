@@ -92,7 +92,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
             id={`buy-whatsapp-${product.id}`}
           >
             <MessageCircle className="w-3.5 h-3.5" />
-            Buy via WhatsApp
+            Buy
           </a>
         </div>
       </div>

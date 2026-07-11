@@ -184,7 +184,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   id="buy-whatsapp-btn"
                 >
                   <MessageCircle className="w-5 h-5" />
-                  Buy via WhatsApp — Get PDF Instantly
+                  Buy
                 </a>
 
                 {/* M-Pesa coming soon notice */}
