@@ -1,18 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import ProductCard from "@/components/ui/ProductCard";
-import { products } from "@/data/products";
+import { Product } from "@/data/products";
 
 const categories = ["All", "Linguistics", "Set Books", "Writing", "Grammar", "Bundle"];
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((data: Product[]) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   const filtered = products.filter((p) => {
     const matchCat = activeCategory === "All" || p.category === activeCategory;
@@ -85,7 +97,14 @@ export default function ShopPage() {
         </p>
 
         {/* Grid */}
-        {filtered.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div
+              className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+              style={{ borderColor: "#1a5c38", borderTopColor: "transparent" }}
+            />
+          </div>
+        ) : filtered.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />

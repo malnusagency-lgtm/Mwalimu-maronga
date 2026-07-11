@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -17,7 +18,7 @@ import {
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import CTASection from "@/components/ui/CTASection";
 import ProductCard from "@/components/ui/ProductCard";
-import { getFeaturedProducts } from "@/data/products";
+import { Product } from "@/data/products";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const credentials = [
@@ -30,13 +31,26 @@ const credentials = [
 
 export default function HomePage() {
   const { t } = useLanguage();
-  const featured = getFeaturedProducts().slice(0, 3);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((data: Product[]) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const featured = products.filter((p) => p.featured).slice(0, 3);
 
   const stats = [
     { icon: GraduationCap, label: t.stats.examiner, value: "Paper 102/3", color: "text-brand-gold-500" },
     { icon: Users, label: t.stats.taught, value: "1,000+", color: "text-brand-green-500" },
     { icon: Award, label: t.stats.schools, value: "Moi Girls' Nairobi", color: "text-brand-gold-500" },
-    { icon: BookOpen, label: t.stats.materials, value: `${featured.length} PDFs`, color: "text-brand-green-500" },
+    { icon: BookOpen, label: t.stats.materials, value: loading ? "…" : `${products.length} PDFs`, color: "text-brand-green-500" },
   ];
 
   return (
