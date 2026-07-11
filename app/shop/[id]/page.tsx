@@ -6,14 +6,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   CheckCircle,
-  ShoppingCart,
   MessageCircle,
   ArrowLeft,
   FileText,
   Tag,
   Star,
-  Download,
-  Lock,
 } from "lucide-react";
 import { Product } from "@/data/products";
 import { use } from "react";
@@ -137,7 +134,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               )}
               {product.pdfUrl && (
                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                  <Download className="w-3 h-3" />
+                  <FileText className="w-3 h-3" />
                   PDF Download
                 </span>
               )}
@@ -175,7 +172,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   {product.priceDisplay}
                 </span>
               </div>
-              <p className="text-gray-400 text-xs mb-6">One-time purchase · Instant PDF delivery</p>
+              <p className="text-gray-400 text-xs mb-6">One-time purchase · PDF sent via WhatsApp</p>
 
               <div className="flex flex-col gap-3">
                 {/* Primary: WhatsApp buy */}
@@ -190,42 +187,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   Buy via WhatsApp — Get PDF Instantly
                 </a>
 
-                {/* PDF Download (if pdfUrl is set — direct download) */}
-                {product.pdfUrl ? (
-                  <a
-                    href={product.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold text-sm text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md"
-                    style={{ background: "linear-gradient(135deg, #4f46e5, #6366f1)" }}
-                    id="download-pdf-btn"
-                  >
-                    <Download className="w-5 h-5" />
-                    Download PDF — Soft Copy
-                  </a>
-                ) : (
-                  <button
-                    disabled
-                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold text-sm text-gray-400 bg-gray-100 cursor-not-allowed"
-                    id="download-pdf-unavailable-btn"
-                  >
-                    <Lock className="w-4 h-4" />
-                    PDF available after purchase
-                  </button>
-                )}
-
-                <button
-                  className="w-full btn-primary py-4 text-sm justify-center"
-                  id="add-to-cart-btn"
+                {/* M-Pesa coming soon notice */}
+                <div
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium"
+                  style={{ background: "rgba(26,92,56,0.06)", color: "#6b7280", border: "1.5px dashed #d1d5db" }}
                 >
-                  <ShoppingCart className="w-4 h-4" />
-                  Add to Cart
-                </button>
+                  <span className="text-base">📱</span>
+                  M-Pesa automatic payment — coming soon
+                </div>
               </div>
 
               <p className="text-center text-gray-400 text-xs mt-4">
-                🔒 Secure payment · Instant PDF delivery via WhatsApp
+                🔒 Safe &amp; trusted · PDF delivered via WhatsApp after payment
               </p>
             </div>
 

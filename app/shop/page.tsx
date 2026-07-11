@@ -104,9 +104,9 @@ export default function ShopPage() {
       <div className="bg-brand-green-50 border-y border-brand-green-100 py-8 px-4">
         <div className="max-w-7xl mx-auto grid sm:grid-cols-3 gap-6 text-center">
           {[
-            { emoji: "⚡", title: "Instant Download", desc: "Get your PDF immediately after payment" },
-            { emoji: "🔒", title: "Secure Purchase", desc: "Your payment is safe and encrypted" },
-            { emoji: "📱", title: "Any Device", desc: "Read on phone, tablet or computer" },
+            { emoji: "💬", title: "Order via WhatsApp", desc: "Message Mwalimu directly to place your order" },
+            { emoji: "📱", title: "M-Pesa Payment", desc: "Pay securely via M-Pesa — instructions sent on WhatsApp" },
+            { emoji: "📄", title: "PDF Delivered Instantly", desc: "Your materials sent directly to your WhatsApp or email" },
           ].map((item) => (
             <div key={item.title} className="flex flex-col items-center gap-2">
               <span className="text-3xl">{item.emoji}</span>

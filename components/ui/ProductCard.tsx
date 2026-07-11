@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ShoppingCart, Star, FileText } from "lucide-react";
+import { MessageCircle, Star, FileText } from "lucide-react";
 import { Product } from "@/data/products";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +12,10 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, className }: ProductCardProps) {
+  const whatsAppMsg = encodeURIComponent(
+    `Hello Mwalimu Maronga! I'd like to purchase: ${product.title} (${product.priceDisplay}). Please guide me on how to pay and receive the PDF.`
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -77,18 +80,20 @@ export default function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Price + CTA */}
         <div className="flex items-center justify-between gap-3 mt-auto">
-          <div>
-            <span className="font-heading text-2xl font-bold text-brand-green-800">
-              {product.priceDisplay}
-            </span>
-          </div>
-          <Link
-            href={`/shop/${product.id}`}
-            className="btn-primary text-xs px-4 py-2.5"
+          <span className="font-heading text-2xl font-bold text-brand-green-800">
+            {product.priceDisplay}
+          </span>
+          <a
+            href={`https://wa.me/254705469192?text=${whatsAppMsg}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs px-4 py-2.5 rounded-2xl font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md whitespace-nowrap"
+            style={{ background: "#25D366" }}
+            id={`buy-whatsapp-${product.id}`}
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            Buy Now
-          </Link>
+            <MessageCircle className="w-3.5 h-3.5" />
+            Buy via WhatsApp
+          </a>
         </div>
       </div>
     </motion.div>
