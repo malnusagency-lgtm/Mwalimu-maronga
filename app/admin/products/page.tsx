@@ -239,7 +239,6 @@ export default function AdminProductsPage() {
         ) : (
           filtered.map((p, i) => {
             const color = CATEGORY_COLORS[p.category] ?? "#6b7280";
-            const isDynamic = p.id.startsWith("dyn-");
             return (
               <div
                 key={p.id}
@@ -318,26 +317,19 @@ export default function AdminProductsPage() {
                   >
                     <Edit3 className="w-3.5 h-3.5" style={{ color: "#6b7280" }} />
                   </Link>
-                  {isDynamic && (
-                    <button
-                      onClick={() => setDeleteId(p.id)}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:bg-red-500/10"
-                      title="Delete product"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" style={{ color: "#ef4444" }} />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setDeleteId(p.id)}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:bg-red-500/10"
+                    title="Delete product"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" style={{ color: "#ef4444" }} />
+                  </button>
                 </div>
               </div>
             );
           })
         )}
       </div>
-
-      <p className="text-xs text-center" style={{ color: "#374151" }}>
-        Static products (pre-coded) cannot be deleted from the dashboard. Use the product form to
-        add dynamic products that are fully manageable here.
-      </p>
 
       {/* Delete Confirm Modal */}
       {deleteId && (
