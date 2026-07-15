@@ -8,6 +8,7 @@ import {
   Search,
   Trash2,
   Edit3,
+  Eye,
   Star,
   BookOpen,
   Filter,
@@ -309,14 +310,24 @@ export default function AdminProductsPage() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
+                  {/* Edit product (admin) */}
+                  <Link
+                    href={`/admin/products/${p.id}/edit`}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:bg-white/10"
+                    title="Edit product"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" style={{ color: "#6b7280" }} />
+                  </Link>
+                  {/* Preview in shop (frontend) */}
                   <Link
                     href={`/shop/${p.id}`}
                     target="_blank"
                     className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:bg-white/10"
                     title="View in shop"
                   >
-                    <Edit3 className="w-3.5 h-3.5" style={{ color: "#6b7280" }} />
+                    <Eye className="w-3.5 h-3.5" style={{ color: "#6b7280" }} />
                   </Link>
+                  {/* Delete */}
                   <button
                     onClick={() => setDeleteId(p.id)}
                     className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:bg-red-500/10"

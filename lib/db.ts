@@ -1,90 +1,198 @@
+/**
+ * db.ts – Product data store
+ *
+ * Production (Vercel): reads/writes a JSON "database" stored as a raw file
+ *   in your Cloudinary account under the public_id "mwalimu-maronga/products-store".
+ *   Cloudinary provides persistent, durable storage that survives cold starts.
+ *
+ * Local development: falls back to data/products-store.json on the local filesystem.
+ */
+
 import fs from "fs";
 import path from "path";
-import { Product, products as staticProducts } from "@/data/products";
+import crypto from "crypto";
+import { Product } from "@/data/products";
 
-const IS_VERCEL = process.env.VERCEL === "1";
-const DB_PATH = IS_VERCEL
-  ? path.join("/tmp", "products-store.json")
-  : path.join(process.cwd(), "data", "products-store.json");
+// ─── Config ────────────────────────────────────────────────────────────────────
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const API_KEY = process.env.CLOUDINARY_API_KEY;
+const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
+/** Public ID for the raw JSON file stored in Cloudinary */
+const STORE_PUBLIC_ID = "mwalimu-maronga/products-store";
+
+/** Use Cloudinary when all three credentials are present */
+const USE_CLOUDINARY = !!(CLOUD_NAME && API_KEY && API_SECRET);
+
+/** Local filesystem path for dev fallback */
+const LOCAL_DB_PATH = path.join(process.cwd(), "data", "products-store.json");
+
+// ─── Types ─────────────────────────────────────────────────────────────────────
 interface Store {
   dynamic: Product[];
   deletedIds: string[];
 }
 
-function readStore(): Store {
+const EMPTY_STORE: Store = { dynamic: [], deletedIds: [] };
+
+// ─── Local file helpers (dev) ──────────────────────────────────────────────────
+function readLocalStore(): Store {
   try {
-    if (!fs.existsSync(DB_PATH)) {
-      return { dynamic: [], deletedIds: [] };
-    }
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
+    if (!fs.existsSync(LOCAL_DB_PATH)) return { ...EMPTY_STORE };
+    const raw = fs.readFileSync(LOCAL_DB_PATH, "utf-8");
     return JSON.parse(raw) as Store;
   } catch {
-    return { dynamic: [], deletedIds: [] };
+    return { ...EMPTY_STORE };
   }
 }
 
-function writeStore(store: Store): void {
+function writeLocalStore(store: Store): void {
   try {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(DB_PATH, JSON.stringify(store, null, 2), "utf-8");
+    const dir = path.dirname(LOCAL_DB_PATH);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(store, null, 2), "utf-8");
   } catch (err) {
-    console.error("Failed to write to product store:", err);
+    console.error("[db] Failed to write local store:", err);
   }
 }
 
-/** Returns all products: dynamic ones only */
-export function getAllProducts(): Product[] {
-  const store = readStore();
+// ─── Cloudinary helpers (production) ──────────────────────────────────────────
+
+/**
+ * Generates a Cloudinary API signature.
+ * Algorithm: SHA-1( sorted_key=value&... + api_secret )
+ */
+function cloudinarySign(params: Record<string, string>): string {
+  const toSign =
+    Object.keys(params)
+      .sort()
+      .map((k) => `${k}=${params[k]}`)
+      .join("&") + API_SECRET!;
+  return crypto.createHash("sha1").update(toSign).digest("hex");
+}
+
+/** Read the products store JSON from Cloudinary raw delivery URL */
+async function readCloudinaryStore(): Promise<Store> {
+  try {
+    const url = `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/${STORE_PUBLIC_ID}`;
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" },
+    });
+    if (!res.ok) {
+      // 404 = store doesn't exist yet (first run)
+      if (res.status === 404) return { ...EMPTY_STORE };
+      console.error("[db] Cloudinary read error:", res.status, await res.text());
+      return { ...EMPTY_STORE };
+    }
+    const data = await res.json();
+    return data as Store;
+  } catch (err) {
+    console.error("[db] Failed to read Cloudinary store:", err);
+    return { ...EMPTY_STORE };
+  }
+}
+
+/** Upload the store JSON to Cloudinary as a raw file, replacing the previous version */
+async function writeCloudinaryStore(store: Store): Promise<void> {
+  try {
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const paramsToSign: Record<string, string> = {
+      invalidate: "true",
+      overwrite: "true",
+      public_id: STORE_PUBLIC_ID,
+      timestamp,
+    };
+    const signature = cloudinarySign(paramsToSign);
+
+    const json = JSON.stringify(store);
+    const blob = new Blob([json], { type: "application/json" });
+
+    const form = new FormData();
+    form.append("file", blob, "products-store.json");
+    form.append("public_id", STORE_PUBLIC_ID);
+    form.append("overwrite", "true");
+    form.append("invalidate", "true");
+    form.append("timestamp", timestamp);
+    form.append("api_key", API_KEY!);
+    form.append("signature", signature);
+
+    const uploadRes = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
+      { method: "POST", body: form }
+    );
+
+    if (!uploadRes.ok) {
+      const errBody = await uploadRes.text();
+      console.error("[db] Cloudinary write failed:", uploadRes.status, errBody);
+    } else {
+      console.log("[db] Cloudinary store updated successfully.");
+    }
+  } catch (err) {
+    console.error("[db] Failed to write Cloudinary store:", err);
+  }
+}
+
+// ─── Store accessor (chooses backend automatically) ───────────────────────────
+async function readStore(): Promise<Store> {
+  if (USE_CLOUDINARY) return readCloudinaryStore();
+  return readLocalStore();
+}
+
+async function writeStore(store: Store): Promise<void> {
+  if (USE_CLOUDINARY) return writeCloudinaryStore(store);
+  writeLocalStore(store);
+}
+
+// ─── Public API ────────────────────────────────────────────────────────────────
+
+/** Returns all dynamic products (Cloudinary in prod, local file in dev) */
+export async function getAllProducts(): Promise<Product[]> {
+  const store = await readStore();
   const deletedSet = new Set(store.deletedIds);
-  const filteredDynamic = store.dynamic.filter((p) => !deletedSet.has(p.id));
-  return filteredDynamic;
+  return store.dynamic.filter((p) => !deletedSet.has(p.id));
 }
 
-/** @deprecated use getAllProducts instead */
-export function getDynamicProducts(): Product[] {
-  return getAllProducts();
+/** Fetch a single product by ID */
+export async function getProductById(id: string): Promise<Product | null> {
+  const all = await getAllProducts();
+  return all.find((p) => p.id === id) ?? null;
 }
 
-export function addDynamicProduct(product: Product): Product {
-  const store = readStore();
+/** Persist a new dynamic product */
+export async function addDynamicProduct(product: Product): Promise<Product> {
+  const store = await readStore();
   store.dynamic.unshift(product);
-  writeStore(store);
+  await writeStore(store);
   return product;
 }
 
-export function deleteDynamicProduct(id: string): boolean {
-  const store = readStore();
-
-  // Check if it's a dynamic product
-  const dynIdx = store.dynamic.findIndex((p) => p.id === id);
-  if (dynIdx !== -1) {
-    store.dynamic.splice(dynIdx, 1);
-    writeStore(store);
-    return true;
-  }
-
-  // Check if it's a static product (soft-delete by tracking deletedId)
-  const isStatic = staticProducts.some((p) => p.id === id);
-  if (isStatic) {
-    if (!store.deletedIds.includes(id)) {
-      store.deletedIds.push(id);
-    }
-    writeStore(store);
-    return true;
-  }
-
-  return false;
-}
-
-export function updateDynamicProduct(id: string, updates: Partial<Product>): Product | null {
-  const store = readStore();
+/** Update a dynamic product by ID; returns null if not found */
+export async function updateDynamicProduct(
+  id: string,
+  updates: Partial<Product>
+): Promise<Product | null> {
+  const store = await readStore();
   const idx = store.dynamic.findIndex((p) => p.id === id);
   if (idx === -1) return null;
   store.dynamic[idx] = { ...store.dynamic[idx], ...updates };
-  writeStore(store);
+  await writeStore(store);
   return store.dynamic[idx];
+}
+
+/** Delete a dynamic product; returns false if not found */
+export async function deleteDynamicProduct(id: string): Promise<boolean> {
+  const store = await readStore();
+  const dynIdx = store.dynamic.findIndex((p) => p.id === id);
+  if (dynIdx !== -1) {
+    store.dynamic.splice(dynIdx, 1);
+    await writeStore(store);
+    return true;
+  }
+  return false;
+}
+
+/** @deprecated – use getAllProducts instead */
+export async function getDynamicProducts(): Promise<Product[]> {
+  return getAllProducts();
 }

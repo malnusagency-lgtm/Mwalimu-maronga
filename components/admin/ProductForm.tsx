@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { CloudinaryUploader } from "./CloudinaryUploader";
 import { CloudinaryPdfUploader } from "./CloudinaryPdfUploader";
+import { Product } from "@/data/products";
 
 const CATEGORIES = ["Linguistics", "Set Books", "Writing", "Grammar", "Bundle"];
 const COMMON_TAGS = ["KCSE", "Form 4", "Form 3", "Kiswahili", "Insha", "Sarufi", "Isimu Jamii", "Set Books", "Grammar", "Holiday", "Bundle", "Essay"];
@@ -170,9 +171,38 @@ function Textarea({
 }
 
 // ─── Product Form ─────────────────────────────────────────────────────────────
-export function ProductForm() {
+export function ProductForm({
+  initialData,
+  productId,
+}: {
+  /** When provided, the form starts in edit mode pre-filled with this data */
+  initialData?: Product;
+  /** The ID of the product being edited (required when initialData is set) */
+  productId?: string;
+}) {
+  const isEditMode = !!(initialData && productId);
   const router = useRouter();
-  const [form, setForm] = useState<FormState>(INITIAL);
+
+  const buildInitial = (): FormState => {
+    if (!initialData) return INITIAL;
+    return {
+      title: initialData.title,
+      slug: initialData.slug,
+      description: initialData.description,
+      longDescription: initialData.longDescription ?? "",
+      price: String(initialData.price),
+      category: initialData.category,
+      tags: initialData.tags ?? [],
+      benefits: initialData.benefits.length > 0 ? initialData.benefits : [""],
+      pages: initialData.pages ? String(initialData.pages) : "",
+      featured: initialData.featured,
+      preview: initialData.preview ?? "",
+      image: initialData.image,
+      pdfUrl: initialData.pdfUrl ?? "",
+    };
+  };
+
+  const [form, setForm] = useState<FormState>(buildInitial);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -235,15 +265,20 @@ export function ProductForm() {
         benefits: form.benefits.filter((b) => b.trim()),
       };
 
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const url = isEditMode
+        ? `/api/products?id=${productId}`
+        : "/api/products";
+      const method = isEditMode ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       if (res.ok) {
         setSuccess(true);
-        setForm(INITIAL);
+        if (!isEditMode) setForm(INITIAL);
         setTimeout(() => router.push("/admin/products"), 2000);
       } else {
         const data = await res.json();
@@ -265,9 +300,13 @@ export function ProductForm() {
         >
           <CheckCircle className="w-10 h-10" style={{ color: "#22c55e" }} />
         </div>
-        <h2 className="font-heading text-2xl font-bold text-white mb-2">Product Published!</h2>
+        <h2 className="font-heading text-2xl font-bold text-white mb-2">
+          {isEditMode ? "Product Updated!" : "Product Published!"}
+        </h2>
         <p className="text-sm mb-6" style={{ color: "#6b7280" }}>
-          Your new material is live in the shop. Redirecting…
+          {isEditMode
+            ? "Your changes have been saved. Redirecting…"
+            : "Your new material is live in the shop. Redirecting…"}
         </p>
         <div
           className="w-48 h-1 rounded-full overflow-hidden"
@@ -675,12 +714,12 @@ export function ProductForm() {
             {submitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Saving Product…
+                {isEditMode ? "Saving Changes…" : "Saving Product…"}
               </>
             ) : (
               <>
                 <CheckCircle className="w-5 h-5" />
-                Publish Product
+                {isEditMode ? "Save Changes" : "Publish Product"}
               </>
             )}
           </button>
