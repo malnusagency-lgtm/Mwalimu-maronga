@@ -75,7 +75,7 @@ function cloudinarySign(params: Record<string, string>): string {
 async function readCloudinaryStore(): Promise<Store> {
   try {
     // Use a timestamp version to bypass Cloudinary CDN cache
-    const url = `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/v${Date.now()}/${STORE_PUBLIC_ID}`;
+    const url = `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/v${Date.now()}/${STORE_PUBLIC_ID}.json`;
     const res = await fetch(url, {
       cache: "no-store",
       headers: { "Cache-Control": "no-cache" },
