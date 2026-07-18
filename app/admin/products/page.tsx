@@ -186,9 +186,10 @@ export default function AdminProductsPage() {
 
       {/* Table */}
       <div
-        className="rounded-2xl border overflow-hidden"
+        className="rounded-2xl border overflow-x-auto"
         style={{ background: "#161b22", borderColor: "rgba(255,255,255,0.07)" }}
       >
+        <div className="min-w-[750px]">
         {/* Table header */}
         <div
           className="grid items-center px-6 py-3 border-b text-xs font-semibold uppercase tracking-wide"
@@ -340,6 +341,7 @@ export default function AdminProductsPage() {
             );
           })
         )}
+        </div>
       </div>
 
       {/* Delete Confirm Modal */}
