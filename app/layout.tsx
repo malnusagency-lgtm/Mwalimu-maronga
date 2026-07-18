@@ -53,7 +53,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth`}>
-      <body className={`antialiased min-h-screen flex flex-col ${isAdmin ? "bg-[#0f1117]" : "bg-white"}`}>
+      <body className={`antialiased min-h-screen flex flex-col overflow-x-hidden ${isAdmin ? "bg-[#0f1117]" : "bg-white"}`}>
         <LanguageProvider>
           {!isAdmin && <Navbar />}
           <main className={isAdmin ? "flex-1" : "flex-1 pt-16 md:pt-20"}>{children}</main>
