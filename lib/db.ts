@@ -11,7 +11,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { Product } from "@/data/products";
+import { Product, products as staticProducts } from "@/data/products";
 
 // ─── Config ────────────────────────────────────────────────────────────────────
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -74,7 +74,8 @@ function cloudinarySign(params: Record<string, string>): string {
 /** Read the products store JSON from Cloudinary raw delivery URL */
 async function readCloudinaryStore(): Promise<Store> {
   try {
-    const url = `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/${STORE_PUBLIC_ID}`;
+    // Use a timestamp version to bypass Cloudinary CDN cache
+    const url = `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/v${Date.now()}/${STORE_PUBLIC_ID}`;
     const res = await fetch(url, {
       cache: "no-store",
       headers: { "Cache-Control": "no-cache" },
@@ -146,11 +147,30 @@ async function writeStore(store: Store): Promise<void> {
 
 // ─── Public API ────────────────────────────────────────────────────────────────
 
-/** Returns all dynamic products (Cloudinary in prod, local file in dev) */
+/** Returns all dynamic and static products (Cloudinary in prod, local file in dev) */
 export async function getAllProducts(): Promise<Product[]> {
   const store = await readStore();
   const deletedSet = new Set(store.deletedIds);
-  return store.dynamic.filter((p) => !deletedSet.has(p.id));
+  
+  const result: Product[] = [];
+  const addedIds = new Set<string>();
+
+  // Add dynamic products first (preserves their unshifted order)
+  for (const dp of store.dynamic) {
+    if (!deletedSet.has(dp.id)) {
+      result.push(dp);
+      addedIds.add(dp.id);
+    }
+  }
+
+  // Append static products that haven't been modified (overridden) or deleted
+  for (const sp of staticProducts) {
+    if (!deletedSet.has(sp.id) && !addedIds.has(sp.id)) {
+      result.push(sp);
+    }
+  }
+
+  return result;
 }
 
 /** Fetch a single product by ID */
@@ -173,19 +193,46 @@ export async function updateDynamicProduct(
   updates: Partial<Product>
 ): Promise<Product | null> {
   const store = await readStore();
-  const idx = store.dynamic.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  store.dynamic[idx] = { ...store.dynamic[idx], ...updates };
-  await writeStore(store);
-  return store.dynamic[idx];
+  const dynIdx = store.dynamic.findIndex((p) => p.id === id);
+  
+  if (dynIdx !== -1) {
+    store.dynamic[dynIdx] = { ...store.dynamic[dynIdx], ...updates };
+    await writeStore(store);
+    return store.dynamic[dynIdx];
+  } else {
+    // If it's a static product, create a dynamic copy
+    const staticProduct = staticProducts.find((p) => p.id === id);
+    if (staticProduct) {
+      const newDynamic = { ...staticProduct, ...updates };
+      store.dynamic.unshift(newDynamic);
+      await writeStore(store);
+      return newDynamic;
+    }
+  }
+  return null;
 }
 
 /** Delete a dynamic product; returns false if not found */
 export async function deleteDynamicProduct(id: string): Promise<boolean> {
   const store = await readStore();
+  let found = false;
+  
   const dynIdx = store.dynamic.findIndex((p) => p.id === id);
   if (dynIdx !== -1) {
     store.dynamic.splice(dynIdx, 1);
+    found = true;
+  }
+  
+  const isStatic = staticProducts.some((p) => p.id === id);
+  if (isStatic) {
+    if (!store.deletedIds) store.deletedIds = [];
+    if (!store.deletedIds.includes(id)) {
+      store.deletedIds.push(id);
+    }
+    found = true;
+  }
+  
+  if (found) {
     await writeStore(store);
     return true;
   }
